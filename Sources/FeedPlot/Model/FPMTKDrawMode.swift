@@ -4,6 +4,12 @@
 import Foundation
 import MetalKit
 
+/// An MTKView can schedule refreshes to its contents in a few ways.
+/// Drawing at the display's native refresh speed may be the smoothest,
+/// but this may be wasteful if your data refresh slowly and are numerous.
+/// Drawing imperatively could be more efficient, but you may need to
+/// watch for display sync issues.
+///
 public enum FPMTKDrawMode {
 
     /// Redraws as fast as useful (MTKView.preferredFramesPerSecond)

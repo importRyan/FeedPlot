@@ -12,8 +12,8 @@ typealias ViewHost = UIViewRepresentable
 
 public struct FeedPlotView: ViewHost {
 
-    public init(mode: FPMTKDrawMode,
-                dataProvider: FPDataProvider,
+    public init(_ mode: FPMTKDrawMode,
+                from dataProvider: FPDataProvider,
                 connectPlot: @escaping (FPMetalPlotView) -> Void) {
         self.mode = mode
         self.dataProvider = dataProvider

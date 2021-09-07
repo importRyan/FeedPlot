@@ -10,8 +10,8 @@ public class FPMetalPlotView: MTKView {
 
     private weak var data: FPDataProvider? = nil
 
-    private var commandQueue : MTLCommandQueue!
-    private var pipeline : MTLRenderPipelineState!
+    private var commandQueue: MTLCommandQueue!
+    private var pipeline: MTLRenderPipelineState!
 
     public init(mode: FPMTKDrawMode) {
         super.init(frame: .zero, device: nil)
@@ -48,6 +48,8 @@ private extension FPMetalPlotView {
 
     func setupMetal(mode: FPMTKDrawMode) {
         clearColor = MTLClearColorMake(0, 0, 0, 0)
+        layer?.backgroundColor = .clear
+        layer?.isOpaque = false
 
         delegate = self
         mode.configure(mtkview: self)
@@ -56,6 +58,7 @@ private extension FPMetalPlotView {
         commandQueue = device!.makeCommandQueue()!
 
         makeRenderPipelineState()
+
         #if !targetEnvironment(macCatalyst) && canImport(AppKit)
         needsDisplay = true
         #else
@@ -64,7 +67,8 @@ private extension FPMetalPlotView {
     }
 
     func makeRenderPipelineState() {
-        let library = device!.makeDefaultLibrary()!
+        guard let library = try? device?.makeDefaultLibrary(bundle: Bundle.module)
+        else { fatalError("The FeedPlot package failed to load its Metal library. Report this issue to the developer.") }
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = library.makeFunction(name: "FPVertexShader")
         pipelineDescriptor.fragmentFunction = library.makeFunction(name: "FPFragmentShader")
@@ -84,8 +88,8 @@ extension FPMetalPlotView: MTKViewDelegate {
 
     public func draw(in view: MTKView) {
         guard let (vertices, bounds) = data?.getLatestData(),
-              let buffer = commandQueue.makeCommandBuffer(),
               let descriptor = view.currentRenderPassDescriptor,
+              let buffer = commandQueue.makeCommandBuffer(),
               let encoder = buffer.makeRenderCommandEncoder(descriptor: descriptor)
         else { return }
         let vertexCount = vertices.countedByEndIndex()
@@ -118,6 +122,7 @@ extension FPMetalPlotView: MTKViewDelegate {
         )
 
         encoder.endEncoding()
+
         buffer.present(view.currentDrawable!)
         buffer.commit()
     }

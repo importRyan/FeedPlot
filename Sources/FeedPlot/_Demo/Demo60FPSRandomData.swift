@@ -16,8 +16,7 @@ public struct DemoPlot: View {
     @StateObject public var demo = Demo60FPS()
 
     public var body: some View {
-        FeedPlotView(mode: .drawWhenNotified,
-                          dataProvider: demo.dataStore) { [weak demo] metalViewReference in
+        FeedPlotView(.drawWhenNotified, from: demo.dataStore) { [weak demo] metalViewReference in
             demo?.plot = metalViewReference
         }
         .frame(minWidth: 200, maxWidth: .infinity,
@@ -30,7 +29,8 @@ public struct DemoPlot: View {
 
 public class Demo60FPS: ObservableObject {
 
-    /// Houses at least one frame's worth of fake "streaming" two dimensional data, providing it upon request to the Metal graph.
+    /// Houses at least one frame's worth of fake "streaming"
+    /// two dimensional data, providing it upon request to the Metal graph.
     let dataStore: (FPDataStore & FPDataProvider)
     weak var plot: FPMetalPlotView? = nil
 

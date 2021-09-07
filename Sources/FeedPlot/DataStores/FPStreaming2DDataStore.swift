@@ -14,7 +14,7 @@ open class FPStreaming2DDataStore {
     public private(set) var dataPointsAllowedPerFrame: Int
 
     /// An approximate maximum number of data points to store in memory.
-    public private(set) lazy var dataPointCacheMaxSize: Int = dataPointsAllowedPerFrame + 100
+    public private(set) lazy var dataPointCacheMaxSize: Int = dataPointsAllowedPerFrame * 30
 
     /// Recommended display bounds for data. A plot will use
     /// these bounds to scale points into a viewable area.
@@ -58,10 +58,19 @@ extension FPStreaming2DDataStore: FPDataProvider {
 
 extension FPStreaming2DDataStore: FPDataStore {
 
+    public func clearData() {
+        data = []
+    }
+
+
+    public func setBounds(_ newBounds: FPBounds) {
+        bounds = newBounds
+    }
+
     /// Ordered from low to high X values
     public func addData(points: [FPColoredDataPoint]) {
 
-        /// Simply set data if beyond limit
+        /// Simply set if incoming data is beyond cache limit
         if points.endIndex > dataPointCacheMaxSize {
             data = points
             return
@@ -74,17 +83,9 @@ extension FPStreaming2DDataStore: FPDataStore {
         }
 
         /// Roughly right-size data to not grossly exceed the storage ceiling
-        var newData = [FPColoredDataPoint]()
-
-        let retrievalIndex = max(0, min(data.endIndex - 1, data.endIndex - points.endIndex))
-        if retrievalIndex > 1 {
-            newData = Array(data[retrievalIndex...])
-        }
-
+        var newData = Array(data.suffix(dataPointsPerFrame))
         newData.append(contentsOf: points)
         data = newData
-        return
-
     }
 
     public var dataPointCount: Int { data.countedByEndIndex() }

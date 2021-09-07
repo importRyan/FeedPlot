@@ -17,7 +17,9 @@ let package = Package(
     targets: [
         .target(
             name: "FeedPlot",
-            dependencies: []),
+            dependencies: [],
+            resources: [.process("Metal/FPShaders.metal")]
+        ),
         .testTarget(
             name: "FeedPlotTests",
             dependencies: ["FeedPlot"]),

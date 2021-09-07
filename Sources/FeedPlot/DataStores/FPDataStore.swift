@@ -11,4 +11,8 @@ public protocol FPDataStore: AnyObject {
 
     /// Sorted from low to high X values
     func addData(points: [FPColoredDataPoint])
+
+    func setBounds(_ newBounds: FPBounds)
+
+    func clearData()
 }
