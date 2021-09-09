@@ -3,6 +3,20 @@
 import MetalKit
 import simd
 
+var _metalDevice: MTLDevice!
+var _metalLibrary: MTLLibrary!
+var didSetupMetal = false
+
+public func setupGlobalMetal() {
+    didSetupMetal = true
+    guard let device = MTLCreateSystemDefaultDevice()
+    else { fatalError("The FeedPlot package failed to load Metal. Report this issue to the developer.") }
+    guard let library = try? device.makeDefaultLibrary(bundle: Bundle.module)
+    else { fatalError("The FeedPlot package failed to load its Metal library. Report this issue to the developer.") }
+    _metalDevice = device
+    _metalLibrary = library
+}
+
 /// Draws a scatter plot that is scaled into the view bounds
 /// by a Metal vertex shader. Each axis is inset by 5% to
 /// ensure points at bounds are visible.
@@ -13,15 +27,12 @@ public class FPMetalPlotView: MTKView {
     private var commandQueue: MTLCommandQueue!
     private var pipeline: MTLRenderPipelineState!
 
-    public init(mode: FPMTKDrawMode) {
+    public init(mode: FPMTKDrawMode, maxDataPoints: Int) {
         super.init(frame: .zero, device: nil)
         setupMetal(mode: mode)
     }
 
-    required init(coder: NSCoder) {
-        super.init(coder: coder)
-        setupMetal(mode: .drawAtMonitorFPS)
-    }
+    required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
 
 // MARK: - Plot Methods

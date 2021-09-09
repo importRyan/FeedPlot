@@ -25,7 +25,7 @@ public struct FeedPlotView: ViewHost {
     public let connectPlot: (FPMetalPlotView) -> Void
 
     public func makeView() -> FPMetalPlotView {
-        let plot = FPMetalPlotView(mode: mode)
+        let plot = FPMetalPlotView(mode: mode, maxDataPoints: dataProvider.dataPointsPerFrame)
         plot.setData(provider: dataProvider)
         defer { connectPlot(plot) }
         return plot
