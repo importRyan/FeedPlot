@@ -40,13 +40,9 @@ extension FPStreaming2DDataStore: FPDataProvider {
 
     public func getLatestData() -> (points: [FPColoredDataPoint], latestBounds: FPBounds)? {
         guard !data.isEmpty else { return nil }
-
-        let minIndex = max(0, data.endIndex - dataPointsAllowedPerFrame)
-        let scrolledBounds = bounds.scrolledTo(x: data.last!.point.x)
-
         return (
-            points: Array(data[minIndex...]),
-            latestBounds: scrolledBounds
+            points: data.suffix(dataPointsAllowedPerFrame),
+            latestBounds: bounds.scrolledTo(x: data.last!.point.x)
         )
     }
 
@@ -61,7 +57,6 @@ extension FPStreaming2DDataStore: FPDataStore {
     public func clearData() {
         data = []
     }
-
 
     public func setBounds(_ newBounds: FPBounds) {
         bounds = newBounds

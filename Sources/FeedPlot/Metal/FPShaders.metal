@@ -36,7 +36,7 @@ vertex FPVertexOut FPVertexShader(const constant FPVertexIn *vertexArray [[ buff
 
     // Move into Metal -1/1 coordinates
     // Scale slightly less than exact to ensure points at axis limits are visible
-    output.position = vector_float4(scaledX * 1.9 - 0.95, scaledY * 1.9 - 0.95, scaledZ, 1);
+    output.position = vector_float4(scaledX * 1.975 - 1, scaledY * 1.975 - 1, scaledZ, 1);
     output.color = input.color;
     output.size = 3;
     return output;
