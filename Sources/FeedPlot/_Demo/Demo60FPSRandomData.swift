@@ -37,7 +37,8 @@ public class Demo60FPS: ObservableObject {
     init() {
         self.dataStore = FPStreaming2DDataStore(
             bounds: FPBounds(xAxis: 0...10, yAxis: -5...5),
-            dataPointsPerFrame: 3000
+            dataPointsPerFrame: 3000,
+            pointSize: 3
         )
 
         dataStore.addData(points: wideWave(at: 0, points: 1000, color: colors[0]))

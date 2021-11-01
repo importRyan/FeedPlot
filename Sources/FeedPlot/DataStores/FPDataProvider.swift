@@ -8,7 +8,7 @@ public protocol FPDataProvider: AnyObject {
 
     /// Returns data points for one frame, up to the provider's maximum,
     /// with bounds for that frame
-    func getLatestData() -> (points: [FPColoredDataPoint], latestBounds: FPBounds)?
+    func getLatestData() -> (points: [FPColoredDataPoint], latestBounds: FPBounds, pointSize: Float)?
 
     /// Maximum data points to graph per frame
     var dataPointsPerFrame: Int { get }
@@ -16,4 +16,6 @@ public protocol FPDataProvider: AnyObject {
     /// Per-axis bounds of stored data. Informs a plot how to
     /// scale points into a viewable area.
     var bounds: FPBounds { get }
+
+    var pointSize: Float { get }
 }

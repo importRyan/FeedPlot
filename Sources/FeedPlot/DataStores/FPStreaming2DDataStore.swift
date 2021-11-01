@@ -20,13 +20,18 @@ open class FPStreaming2DDataStore {
     /// these bounds to scale points into a viewable area.
     public private(set) var bounds: FPBounds
 
+    public var pointSize: Float
+
     /// Initialize with empty or preset data
     public init(data: [FPColoredDataPoint] = [],
                 bounds: FPBounds,
-                dataPointsPerFrame: Int) {
+                dataPointsPerFrame: Int,
+                pointSize: Float
+    ) {
         self.data = data
         self.dataPointsAllowedPerFrame = dataPointsPerFrame
         self.bounds = bounds
+        self.pointSize = pointSize
     }
 
     func enforceMaxSize() {
@@ -38,11 +43,12 @@ open class FPStreaming2DDataStore {
 
 extension FPStreaming2DDataStore: FPDataProvider {
 
-    public func getLatestData() -> (points: [FPColoredDataPoint], latestBounds: FPBounds)? {
+    public func getLatestData() -> (points: [FPColoredDataPoint], latestBounds: FPBounds, pointSize: Float)? {
         guard !data.isEmpty else { return nil }
         return (
             points: data.suffix(dataPointsAllowedPerFrame),
-            latestBounds: bounds.scrolledTo(x: data.last!.point.x)
+            latestBounds: bounds.scrolledTo(x: data.last!.point.x),
+            pointSize: pointSize
         )
     }
 

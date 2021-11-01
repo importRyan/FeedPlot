@@ -23,7 +23,6 @@ public func setupGlobalMetal() {
 public class FPMetalPlotView: MTKView {
 
     private weak var data: FPDataProvider? = nil
-
     private var commandQueue: MTLCommandQueue!
     private var pipeline: MTLRenderPipelineState!
 
@@ -59,8 +58,13 @@ private extension FPMetalPlotView {
 
     func setupMetal(mode: FPMTKDrawMode) {
         clearColor = MTLClearColorMake(0, 0, 0, 0)
+        #if !targetEnvironment(macCatalyst) && canImport(AppKit)
         layer?.backgroundColor = .clear
         layer?.isOpaque = false
+        #else
+        layer.backgroundColor = CGColor(red: 0, green: 0, blue: 0, alpha: 0)
+        layer.isOpaque = false
+        #endif
 
         delegate = self
         mode.configure(mtkview: self)
@@ -98,13 +102,13 @@ extension FPMetalPlotView: MTKViewDelegate {
     }
 
     public func draw(in view: MTKView) {
-        guard let (vertices, bounds) = data?.getLatestData(),
+        guard let (vertices, bounds, pointSize) = data?.getLatestData(),
               let descriptor = view.currentRenderPassDescriptor,
               let buffer = commandQueue.makeCommandBuffer(),
               let encoder = buffer.makeRenderCommandEncoder(descriptor: descriptor)
         else { return }
         let vertexCount = vertices.countedByEndIndex()
-        var vertexUniforms = FPVertexUniforms(bounds: bounds)
+        var vertexUniforms = FPVertexUniforms(bounds: bounds, pointSize: pointSize)
 
         encoder.setRenderPipelineState(pipeline)
 

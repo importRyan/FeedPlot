@@ -20,6 +20,7 @@ struct FPVertexUniforms {
     float endY;
     float startZ;
     float endZ;
+    float size;
 };
 
 vertex FPVertexOut FPVertexShader(const constant FPVertexIn *vertexArray [[ buffer(0) ]],
@@ -38,7 +39,7 @@ vertex FPVertexOut FPVertexShader(const constant FPVertexIn *vertexArray [[ buff
     // Scale slightly less than exact to ensure points at axis limits are visible
     output.position = vector_float4(scaledX * 1.975 - 1, scaledY * 1.975 - 1, scaledZ, 1);
     output.color = input.color;
-    output.size = 3;
+    output.size = uniforms.size;
     return output;
 }
 
